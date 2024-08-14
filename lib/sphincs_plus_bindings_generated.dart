@@ -8,7 +8,7 @@
 // ignore_for_file: type=lint
 import 'dart:ffi' as ffi;
 
-/// Bindings for `src/sphincs_plus.h`.
+/// Bindings for `src/sphincsplus/ref/api.h`.
 ///
 /// Regenerate bindings with `dart run ffigen --config ffigen.yaml`.
 ///
@@ -27,43 +27,228 @@ class SphincsPlusBindings {
           lookup)
       : _lookup = lookup;
 
-  /// A very short-lived native function.
-  ///
-  /// For very short-lived functions, it is fine to call them on the main isolate.
-  /// They will block the Dart execution while running the native function, so
-  /// only do this for native functions which are guaranteed to be short-lived.
-  int sum(
-    int a,
-    int b,
+  /// Returns the length of a secret key, in bytes
+  int crypto_sign_secretkeybytes() {
+    return _crypto_sign_secretkeybytes();
+  }
+
+  late final _crypto_sign_secretkeybytesPtr =
+      _lookup<ffi.NativeFunction<ffi.UnsignedLongLong Function()>>(
+          'crypto_sign_secretkeybytes');
+  late final _crypto_sign_secretkeybytes =
+      _crypto_sign_secretkeybytesPtr.asFunction<int Function()>();
+
+  /// Returns the length of a public key, in bytes
+  int crypto_sign_publickeybytes() {
+    return _crypto_sign_publickeybytes();
+  }
+
+  late final _crypto_sign_publickeybytesPtr =
+      _lookup<ffi.NativeFunction<ffi.UnsignedLongLong Function()>>(
+          'crypto_sign_publickeybytes');
+  late final _crypto_sign_publickeybytes =
+      _crypto_sign_publickeybytesPtr.asFunction<int Function()>();
+
+  /// Returns the length of a signature, in bytes
+  int crypto_sign_bytes() {
+    return _crypto_sign_bytes();
+  }
+
+  late final _crypto_sign_bytesPtr =
+      _lookup<ffi.NativeFunction<ffi.UnsignedLongLong Function()>>(
+          'crypto_sign_bytes');
+  late final _crypto_sign_bytes =
+      _crypto_sign_bytesPtr.asFunction<int Function()>();
+
+  /// Returns the length of the seed required to generate a key pair, in bytes
+  int crypto_sign_seedbytes() {
+    return _crypto_sign_seedbytes();
+  }
+
+  late final _crypto_sign_seedbytesPtr =
+      _lookup<ffi.NativeFunction<ffi.UnsignedLongLong Function()>>(
+          'crypto_sign_seedbytes');
+  late final _crypto_sign_seedbytes =
+      _crypto_sign_seedbytesPtr.asFunction<int Function()>();
+
+  /// Generates a SPHINCS+ key pair given a seed.
+  /// Format sk: [SK_SEED || SK_PRF || PUB_SEED || root]
+  /// Format pk: [root || PUB_SEED]
+  int crypto_sign_seed_keypair(
+    ffi.Pointer<ffi.UnsignedChar> pk,
+    ffi.Pointer<ffi.UnsignedChar> sk,
+    ffi.Pointer<ffi.UnsignedChar> seed,
   ) {
-    return _sum(
-      a,
-      b,
+    return _crypto_sign_seed_keypair(
+      pk,
+      sk,
+      seed,
     );
   }
 
-  late final _sumPtr =
-      _lookup<ffi.NativeFunction<ffi.Int Function(ffi.Int, ffi.Int)>>('sum');
-  late final _sum = _sumPtr.asFunction<int Function(int, int)>();
+  late final _crypto_sign_seed_keypairPtr = _lookup<
+      ffi.NativeFunction<
+          ffi.Int Function(
+              ffi.Pointer<ffi.UnsignedChar>,
+              ffi.Pointer<ffi.UnsignedChar>,
+              ffi.Pointer<ffi.UnsignedChar>)>>('crypto_sign_seed_keypair');
+  late final _crypto_sign_seed_keypair =
+      _crypto_sign_seed_keypairPtr.asFunction<
+          int Function(ffi.Pointer<ffi.UnsignedChar>,
+              ffi.Pointer<ffi.UnsignedChar>, ffi.Pointer<ffi.UnsignedChar>)>();
 
-  /// A longer lived native function, which occupies the thread calling it.
-  ///
-  /// Do not call these kind of native functions in the main isolate. They will
-  /// block Dart execution. This will cause dropped frames in Flutter applications.
-  /// Instead, call these native functions on a separate isolate.
-  int sum_long_running(
-    int a,
-    int b,
+  /// Generates a SPHINCS+ key pair.
+  /// Format sk: [SK_SEED || SK_PRF || PUB_SEED || root]
+  /// Format pk: [root || PUB_SEED]
+  int crypto_sign_keypair(
+    ffi.Pointer<ffi.UnsignedChar> pk,
+    ffi.Pointer<ffi.UnsignedChar> sk,
   ) {
-    return _sum_long_running(
-      a,
-      b,
+    return _crypto_sign_keypair(
+      pk,
+      sk,
     );
   }
 
-  late final _sum_long_runningPtr =
-      _lookup<ffi.NativeFunction<ffi.Int Function(ffi.Int, ffi.Int)>>(
-          'sum_long_running');
-  late final _sum_long_running =
-      _sum_long_runningPtr.asFunction<int Function(int, int)>();
+  late final _crypto_sign_keypairPtr = _lookup<
+      ffi.NativeFunction<
+          ffi.Int Function(ffi.Pointer<ffi.UnsignedChar>,
+              ffi.Pointer<ffi.UnsignedChar>)>>('crypto_sign_keypair');
+  late final _crypto_sign_keypair = _crypto_sign_keypairPtr.asFunction<
+      int Function(
+          ffi.Pointer<ffi.UnsignedChar>, ffi.Pointer<ffi.UnsignedChar>)>();
+
+  /// Returns an array containing a detached signature.
+  int crypto_sign_signature(
+    ffi.Pointer<ffi.Uint8> sig,
+    ffi.Pointer<ffi.Size> siglen,
+    ffi.Pointer<ffi.Uint8> m,
+    int mlen,
+    ffi.Pointer<ffi.Uint8> sk,
+  ) {
+    return _crypto_sign_signature(
+      sig,
+      siglen,
+      m,
+      mlen,
+      sk,
+    );
+  }
+
+  late final _crypto_sign_signaturePtr = _lookup<
+      ffi.NativeFunction<
+          ffi.Int Function(
+              ffi.Pointer<ffi.Uint8>,
+              ffi.Pointer<ffi.Size>,
+              ffi.Pointer<ffi.Uint8>,
+              ffi.Size,
+              ffi.Pointer<ffi.Uint8>)>>('crypto_sign_signature');
+  late final _crypto_sign_signature = _crypto_sign_signaturePtr.asFunction<
+      int Function(ffi.Pointer<ffi.Uint8>, ffi.Pointer<ffi.Size>,
+          ffi.Pointer<ffi.Uint8>, int, ffi.Pointer<ffi.Uint8>)>();
+
+  /// Verifies a detached signature and message under a given public key.
+  int crypto_sign_verify(
+    ffi.Pointer<ffi.Uint8> sig,
+    int siglen,
+    ffi.Pointer<ffi.Uint8> m,
+    int mlen,
+    ffi.Pointer<ffi.Uint8> pk,
+  ) {
+    return _crypto_sign_verify(
+      sig,
+      siglen,
+      m,
+      mlen,
+      pk,
+    );
+  }
+
+  late final _crypto_sign_verifyPtr = _lookup<
+      ffi.NativeFunction<
+          ffi.Int Function(
+              ffi.Pointer<ffi.Uint8>,
+              ffi.Size,
+              ffi.Pointer<ffi.Uint8>,
+              ffi.Size,
+              ffi.Pointer<ffi.Uint8>)>>('crypto_sign_verify');
+  late final _crypto_sign_verify = _crypto_sign_verifyPtr.asFunction<
+      int Function(ffi.Pointer<ffi.Uint8>, int, ffi.Pointer<ffi.Uint8>, int,
+          ffi.Pointer<ffi.Uint8>)>();
+
+  /// Returns an array containing the signature followed by the message.
+  int crypto_sign(
+    ffi.Pointer<ffi.UnsignedChar> sm,
+    ffi.Pointer<ffi.UnsignedLongLong> smlen,
+    ffi.Pointer<ffi.UnsignedChar> m,
+    int mlen,
+    ffi.Pointer<ffi.UnsignedChar> sk,
+  ) {
+    return _crypto_sign(
+      sm,
+      smlen,
+      m,
+      mlen,
+      sk,
+    );
+  }
+
+  late final _crypto_signPtr = _lookup<
+      ffi.NativeFunction<
+          ffi.Int Function(
+              ffi.Pointer<ffi.UnsignedChar>,
+              ffi.Pointer<ffi.UnsignedLongLong>,
+              ffi.Pointer<ffi.UnsignedChar>,
+              ffi.UnsignedLongLong,
+              ffi.Pointer<ffi.UnsignedChar>)>>('crypto_sign');
+  late final _crypto_sign = _crypto_signPtr.asFunction<
+      int Function(
+          ffi.Pointer<ffi.UnsignedChar>,
+          ffi.Pointer<ffi.UnsignedLongLong>,
+          ffi.Pointer<ffi.UnsignedChar>,
+          int,
+          ffi.Pointer<ffi.UnsignedChar>)>();
+
+  /// Verifies a given signature-message pair under a given public key.
+  int crypto_sign_open(
+    ffi.Pointer<ffi.UnsignedChar> m,
+    ffi.Pointer<ffi.UnsignedLongLong> mlen,
+    ffi.Pointer<ffi.UnsignedChar> sm,
+    int smlen,
+    ffi.Pointer<ffi.UnsignedChar> pk,
+  ) {
+    return _crypto_sign_open(
+      m,
+      mlen,
+      sm,
+      smlen,
+      pk,
+    );
+  }
+
+  late final _crypto_sign_openPtr = _lookup<
+      ffi.NativeFunction<
+          ffi.Int Function(
+              ffi.Pointer<ffi.UnsignedChar>,
+              ffi.Pointer<ffi.UnsignedLongLong>,
+              ffi.Pointer<ffi.UnsignedChar>,
+              ffi.UnsignedLongLong,
+              ffi.Pointer<ffi.UnsignedChar>)>>('crypto_sign_open');
+  late final _crypto_sign_open = _crypto_sign_openPtr.asFunction<
+      int Function(
+          ffi.Pointer<ffi.UnsignedChar>,
+          ffi.Pointer<ffi.UnsignedLongLong>,
+          ffi.Pointer<ffi.UnsignedChar>,
+          int,
+          ffi.Pointer<ffi.UnsignedChar>)>();
 }
+
+const String CRYPTO_ALGNAME = 'SPHINCS+';
+
+const int CRYPTO_SECRETKEYBYTES = 64;
+
+const int CRYPTO_PUBLICKEYBYTES = 32;
+
+const int CRYPTO_BYTES = 17088;
+
+const int CRYPTO_SEEDBYTES = 48;
