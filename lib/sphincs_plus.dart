@@ -4,29 +4,41 @@ import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:ffi/ffi.dart';
+import 'package:sphincs_plus/params.dart';
 
 import 'sphincs_plus_bindings_generated.dart';
 
-const String _libName = 'sphincs_plus';
-
-/// The dynamic library in which the symbols for [SphincsPlusBindings] can be found.
-final DynamicLibrary _dylib = () {
+/// Get the dynamic library in which the symbols for [SphincsPlusBindings] can be found.
+DynamicLibrary getLib(Params params) {
   if (Platform.isMacOS || Platform.isIOS) {
-    return DynamicLibrary.open('$_libName.framework/$_libName');
+    return DynamicLibrary.open(
+      '${params.toString()}.framework/${params.toString()}',
+    );
   }
   if (Platform.isAndroid || Platform.isLinux) {
-    return DynamicLibrary.open('lib$_libName.so');
+    return DynamicLibrary.open(
+      '${params.toString()}.so',
+    );
   }
   if (Platform.isWindows) {
-    return DynamicLibrary.open('$_libName.dll');
+    return DynamicLibrary.open(
+      '${params.toString()}.dll',
+    );
   }
   throw UnsupportedError('Unknown platform: ${Platform.operatingSystem}');
-}();
-
-/// The bindings to the native functions in [_dylib].
-final SphincsPlusBindings _bindings = SphincsPlusBindings(_dylib);
+}
 
 class SphincsPlus {
+  /// Set of SPHINCS+ parameters
+  final Params params;
+
+  /// The bindings to the native functions in the dynamic library.
+  late final SphincsPlusBindings _bindings;
+
+  SphincsPlus({required this.params}) {
+    _bindings = SphincsPlusBindings(getLib(params));
+  }
+
   /// Returns the length of a secret key
   int get skLength => _bindings.crypto_sign_secretkeybytes();
 
