@@ -1,72 +1,38 @@
 import 'package:flutter/material.dart';
-import 'dart:async';
+import 'package:sphincs_plus/params.dart';
 
-import 'package:sphincs_plus/sphincs_plus.dart' as sphincs_plus;
+import 'package:sphincs_plus/sphincs_plus.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(MyApp());
 }
 
-class MyApp extends StatefulWidget {
-  const MyApp({super.key});
+class MyApp extends StatelessWidget {
+  final sphincsPlus = SphincsPlus(params: Params.haraka_128f);
 
-  @override
-  State<MyApp> createState() => _MyAppState();
-}
-
-class _MyAppState extends State<MyApp> {
-  late int sumResult;
-  late Future<int> sumAsyncResult;
-
-  @override
-  void initState() {
-    super.initState();
-    sumResult = sphincs_plus.sum(1, 2);
-    sumAsyncResult = sphincs_plus.sumAsync(3, 4);
-  }
+  MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
-    const textStyle = TextStyle(fontSize: 25);
-    const spacerSmall = SizedBox(height: 10);
     return MaterialApp(
       home: Scaffold(
         appBar: AppBar(
-          title: const Text('Native Packages'),
+          title: const Text('SPHINCS PLUS'),
         ),
-        body: SingleChildScrollView(
-          child: Container(
-            padding: const EdgeInsets.all(10),
-            child: Column(
-              children: [
-                const Text(
-                  'This calls a native function through FFI that is shipped as source in the package. '
-                  'The native code is built as part of the Flutter Runner build.',
-                  style: textStyle,
-                  textAlign: TextAlign.center,
-                ),
-                spacerSmall,
-                Text(
-                  'sum(1, 2) = $sumResult',
-                  style: textStyle,
-                  textAlign: TextAlign.center,
-                ),
-                spacerSmall,
-                FutureBuilder<int>(
-                  future: sumAsyncResult,
-                  builder: (BuildContext context, AsyncSnapshot<int> value) {
-                    final displayValue =
-                        (value.hasData) ? value.data : 'loading';
-                    return Text(
-                      'await sumAsync(3, 4) = $displayValue',
-                      style: textStyle,
-                      textAlign: TextAlign.center,
-                    );
-                  },
-                ),
-              ],
-            ),
-          ),
+        body: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: <Widget>[
+            Text('Parameters: ${sphincsPlus.params.toString()}'),
+            const SizedBox(height: 5),
+            Text('PK length: ${sphincsPlus.pkLength}'),
+            const SizedBox(height: 5),
+            Text('SK length: ${sphincsPlus.skLength}'),
+            const SizedBox(height: 5),
+            Text('Seed length: ${sphincsPlus.seedLength}'),
+            const SizedBox(height: 5),
+            Text('Signature length: ${sphincsPlus.signatureLength}'),
+          ],
         ),
       ),
     );
