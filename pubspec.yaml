@@ -1,6 +1,6 @@
 name: sphincs_plus
 description: "A new Flutter FFI plugin project."
-version: 0.0.1
+version: 1.0.0
 # homepage:
 
 environment:
