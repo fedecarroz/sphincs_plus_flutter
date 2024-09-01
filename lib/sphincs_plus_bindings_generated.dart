@@ -242,13 +242,3 @@ class SphincsPlusBindings {
           int,
           ffi.Pointer<ffi.UnsignedChar>)>();
 }
-
-const String CRYPTO_ALGNAME = 'SPHINCS+';
-
-const int CRYPTO_SECRETKEYBYTES = 64;
-
-const int CRYPTO_PUBLICKEYBYTES = 32;
-
-const int CRYPTO_BYTES = 17088;
-
-const int CRYPTO_SEEDBYTES = 48;
