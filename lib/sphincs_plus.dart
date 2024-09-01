@@ -5,25 +5,22 @@ import 'dart:typed_data';
 
 import 'package:ffi/ffi.dart';
 import 'package:sphincs_plus/params.dart';
+import 'package:sphincs_plus/thash.dart';
 
 import 'sphincs_plus_bindings_generated.dart';
 
 /// Get the dynamic library in which the symbols for [SphincsPlusBindings] can be found.
-DynamicLibrary getLib(Params params) {
+DynamicLibrary _getLib(Params params, Thash thash) {
   if (Platform.isMacOS || Platform.isIOS) {
-    return DynamicLibrary.open(
-      '${params.toString()}.framework/${params.toString()}',
-    );
+    // return DynamicLibrary.open('$params-$thash.dylib'); //? Check if possible
+
+    return DynamicLibrary.open('$params-$thash.framework/$params-$thash');
   }
   if (Platform.isAndroid || Platform.isLinux) {
-    return DynamicLibrary.open(
-      '${params.toString()}.so',
-    );
+    return DynamicLibrary.open('$params-$thash.so');
   }
   if (Platform.isWindows) {
-    return DynamicLibrary.open(
-      '${params.toString()}.dll',
-    );
+    return DynamicLibrary.open('$params-$thash.dll');
   }
   throw UnsupportedError('Unknown platform: ${Platform.operatingSystem}');
 }
@@ -32,11 +29,17 @@ class SphincsPlus {
   /// Set of SPHINCS+ parameters
   final Params params;
 
+  /// Tweakable hash
+  final Thash thash;
+
   /// The bindings to the native functions in the dynamic library.
   late final SphincsPlusBindings _bindings;
 
-  SphincsPlus({required this.params}) {
-    _bindings = SphincsPlusBindings(getLib(params));
+  SphincsPlus({
+    this.params = Params.shake_256f,
+    this.thash = Thash.robust,
+  }) {
+    _bindings = SphincsPlusBindings(_getLib(params, thash));
   }
 
   /// Returns the length of a secret key
