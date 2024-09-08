@@ -38,10 +38,8 @@ set(
     ${REF_DIR}/thash.h
 )
 
-set(BASE_FLAGS "${CMAKE_C_FLAGS} -Wall -Wextra -Wpedantic -O3 -Wconversion -Wmissing-prototypes")
-
 foreach(
-    PARAMS # TODO: all params not working, works only with some params
+    PARAMS
 
     "sphincs-haraka-128f" "sphincs-haraka-128s"
     "sphincs-haraka-192f" "sphincs-haraka-192s"
@@ -55,7 +53,6 @@ foreach(
     "sphincs-sha2-192f" "sphincs-sha2-192s"
     "sphincs-sha2-256f" "sphincs-sha2-256s"
 )
-    set(CMAKE_C_FLAGS "${BASE_FLAGS} -DPARAMS=${PARAMS}")
     foreach(THASH "robust" "simple")
         if("${PARAMS}" MATCHES "shake")
             set(SOURCES ${BASE_SOURCES} ${REF_DIR}/fips202.c ${REF_DIR}/hash_shake.c ${REF_DIR}/thash_shake_${THASH}.c)
@@ -93,6 +90,12 @@ foreach(
         endif()
 
         target_link_libraries(${PARAMS}-${THASH} OpenSSL::Crypto)
+
+        target_compile_options(
+            ${PARAMS}-${THASH} PRIVATE 
+            -Wall -Wextra -Wpedantic -O3 -Wconversion -Wmissing-prototypes
+            -DPARAMS=${PARAMS}
+        )
 
         target_compile_definitions(${PARAMS}-${THASH} PUBLIC DART_SHARED_LIB)
     endforeach()    
