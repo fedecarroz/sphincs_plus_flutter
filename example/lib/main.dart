@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:sphincs_plus/params.dart';
-
 import 'package:sphincs_plus/sphincs_plus.dart';
 
 void main() {
