@@ -2,8 +2,6 @@ cmake_minimum_required(VERSION 3.10)
 
 project(sphincs_plus VERSION 1.0.0 LANGUAGES C)
 
-find_package(OpenSSL REQUIRED)
-
 set(CMAKE_C_STANDARD 99)
 set(CMAKE_C_STANDARD_REQUIRED ON)
 
@@ -79,17 +77,12 @@ foreach(
         )
 
         if(WIN32)
-            set_target_properties(${PARAMS}-${THASH} PROPERTIES
-                SUFFIX ".dll")
+            set_target_properties(${PARAMS}-${THASH} PROPERTIES SUFFIX ".dll")
         elseif(APPLE)
-            set_target_properties(${PARAMS}-${THASH} PROPERTIES
-                SUFFIX ".dylib")
+            set_target_properties(${PARAMS}-${THASH} PROPERTIES SUFFIX ".dylib")
         else()
-            set_target_properties(${PARAMS}-${THASH} PROPERTIES
-                SUFFIX ".so")
+            set_target_properties(${PARAMS}-${THASH} PROPERTIES SUFFIX ".so")
         endif()
-
-        target_link_libraries(${PARAMS}-${THASH} OpenSSL::Crypto)
 
         target_compile_options(
             ${PARAMS}-${THASH} PRIVATE 
