@@ -14,13 +14,13 @@ DynamicLibrary _getLib(Params params, Thash thash) {
   if (Platform.isMacOS || Platform.isIOS) {
     // return DynamicLibrary.open('$params-$thash.dylib'); //? Check if possible
 
-    return DynamicLibrary.open('$params-$thash.framework/$params-$thash');
+    return DynamicLibrary.open('lib-$params-$thash.framework/$params-$thash');
   }
   if (Platform.isAndroid || Platform.isLinux) {
-    return DynamicLibrary.open('$params-$thash.so');
+    return DynamicLibrary.open('lib-$params-$thash.so');
   }
   if (Platform.isWindows) {
-    return DynamicLibrary.open('$params-$thash.dll');
+    return DynamicLibrary.open('lib-$params-$thash.dll');
   }
   throw UnsupportedError('Unknown platform: ${Platform.operatingSystem}');
 }
