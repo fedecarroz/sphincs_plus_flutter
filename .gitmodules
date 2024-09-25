@@ -1,3 +1,6 @@
 [submodule "src/sphincsplus"]
 	path = src/sphincsplus
 	url = https://github.com/sphincs/sphincsplus.git
+[submodule "sphincs_plus_demo"]
+	path = demo
+	url = https://github.com/fedecarroz/sphincs_plus_demo
