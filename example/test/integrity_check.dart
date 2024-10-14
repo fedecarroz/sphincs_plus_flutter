@@ -17,6 +17,69 @@ void main() {
 
       final String message = 'Hello world!';
 
+      final int n = 100;
+
+      test(
+        'Handling incorrect private key length during signing',
+        () {
+          final invalidSecretKey = Uint8List.fromList(
+            List.generate(sphincsPlus.skLength + n, (_) => 1),
+          );
+
+          expect(
+            () => sphincsPlus.sign(
+              message: message,
+              secretKey: invalidSecretKey,
+            ),
+            throwsException,
+          );
+        },
+      );
+
+      test(
+        'Handling incorrect public key length during verification',
+        () {
+          final signedMessage = sphincsPlus.sign(
+            message: message,
+            secretKey: secretKey,
+          );
+
+          final invalidPublicKey = Uint8List.fromList(
+            List.generate(sphincsPlus.pkLength + n, (_) => 1),
+          );
+
+          expect(
+            () => sphincsPlus.verify(
+              message: message,
+              signedMessage: signedMessage,
+              publicKey: invalidPublicKey,
+            ),
+            throwsException,
+          );
+        },
+      );
+
+      test(
+        'Handling incorrect signed message length during verification',
+        () {
+          final invalidSignedMessage = Uint8List.fromList(
+            List.generate(
+              sphincsPlus.signatureLength + message.length + n,
+              (_) => 1,
+            ),
+          );
+
+          expect(
+            () => sphincsPlus.verify(
+              message: message,
+              signedMessage: invalidSignedMessage,
+              publicKey: publicKey,
+            ),
+            throwsException,
+          );
+        },
+      );
+
       test(
         'Altered message should fail verification',
         () {

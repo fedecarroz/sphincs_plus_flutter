@@ -15,8 +15,6 @@ void main() {
 
       (publicKey, secretKey) = sphincsPlus.generateKeyPair();
 
-      final String message = 'Hello world!';
-
       test(
         'Signing and verifying a long message',
         () {
@@ -70,46 +68,28 @@ void main() {
       );
 
       test(
-        'Handling incorrect public key length',
+        'Signing and verifying a message with non-UTF-8 characters',
         () {
+          final nonUtf8Message = 'Hello wörld!';
+
           final signedMessage = sphincsPlus.sign(
-            message: message,
+            message: nonUtf8Message,
             secretKey: secretKey,
           );
 
-          final invalidPublicKey = Uint8List.fromList(
-            List.generate(sphincsPlus.pkLength + 100, (_) => 1),
-          );
-
+          expect(signedMessage, isNotNull);
           expect(
-            () => sphincsPlus.verify(
-              message: message,
-              signedMessage: signedMessage,
-              publicKey: invalidPublicKey,
-            ),
-            throwsException,
-          );
-        },
-      );
-
-      test(
-        'Handling incorrect signed message length',
-        () {
-          final invalidSignedMessage = Uint8List.fromList(
-            List.generate(
-              sphincsPlus.signatureLength + message.length + 100,
-              (_) => 1,
-            ),
+            signedMessage.length,
+            equals(nonUtf8Message.length + sphincsPlus.signatureLength),
           );
 
-          expect(
-            () => sphincsPlus.verify(
-              message: message,
-              signedMessage: invalidSignedMessage,
-              publicKey: publicKey,
-            ),
-            throwsException,
+          bool isValid = sphincsPlus.verify(
+            message: nonUtf8Message,
+            signedMessage: signedMessage,
+            publicKey: publicKey,
           );
+
+          expect(isValid, isTrue);
         },
       );
     },
